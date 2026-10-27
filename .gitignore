@@ -1,0 +1,25 @@
+# Dependências e build
+node_modules/
+dist/
+# Build do front (gerado por "npm run web:build")
+public/
+*.tsbuildinfo
+
+# Configuração local e segredos
+.env
+.env.*
+!.env.example
+
+# Dados locais: log, backups, SQLite antigo
+data/
+*.log
+*.sql
+*.db
+*.db-shm
+*.db-wal
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

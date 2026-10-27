@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Painel de instrumento: fundo petróleo, dado em branco-papel.
+   Cor só aparece quando significa alguma coisa sobre o preço.
+   Bahnschrift é a DIN das placas de sinalização de transporte — vem com o
+   Windows, então os códigos IATA ficam com cara de painel de embarque. */
+@theme {
+  --color-ground:  #0E1618;
+  --color-shell:   #0A1113;
+  --color-panel:   #152225;
+  --color-panel-2: #1B2B2F;
+  --color-rule:    #24363A;
+  --color-rule-2:  #31474C;
+  --color-ink:     #E9F1F0;
+  --color-muted:   #7C9298;
+  --color-faint:   #55696E;
+  --color-mint:    #5FD9A6;
+  --color-mint-lit:#7FE6BA;
+  --color-amber:   #E8A33D;
+  --color-rose:    #E4695E;
+
+  --font-display: Bahnschrift, "DIN Alternate", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "Cascadia Mono", Consolas, "SF Mono", ui-monospace, monospace;
+}
+
+@layer base {
+  html { background: var(--color-ground); color-scheme: dark; }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Campos de data e número trazem largura intrínseca e estouram a grade. */
+  input, select, textarea { min-width: 0; }
+
+  :focus-visible { outline: 2px solid var(--color-mint); outline-offset: 1px; }
+
+  ::placeholder { color: var(--color-faint); }
+
+  /* A barra padrão do Windows é clara demais e corta o fundo petróleo. */
+  * { scrollbar-width: thin; scrollbar-color: var(--color-rule-2) transparent; }
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+/* Bahnschrift é variável: dá para condensar sem trocar de fonte. */
+@utility display-tight {
+  font-family: var(--font-display);
+  font-variation-settings: "wght" 600, "wdth" 85;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* A curva do preço se desenha uma vez, na primeira pintura. */
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+.track-line--fresh {
+  stroke-dasharray: 2600;
+  stroke-dashoffset: 2600;
+  animation: draw-line 1s cubic-bezier(.33, 0, .12, 1) forwards;
+}
+
+/* Troca de página: o conteúdo sobe um fio, o suficiente para o olho
+   perceber que mudou de tela sem virar transição de apresentação. */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.page-in { animation: page-in .18s cubic-bezier(.2, 0, .2, 1) both; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+.toast-in { animation: toast-in .16s cubic-bezier(.2, 0, .2, 1) both; }
+
+/* Enquanto a primeira leitura não chega, o bloco respira no lugar do dado. */
+@keyframes pulse-soft {
+  50% { opacity: .45; }
+}
+
+.skeleton {
+  background: var(--color-panel-2);
+  animation: pulse-soft 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track-line--fresh { animation: none; stroke-dashoffset: 0; }
+  .page-in, .toast-in, .skeleton { animation: none; }
+}
